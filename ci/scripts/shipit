@@ -41,19 +41,8 @@ go version; echo; echo
 TARGETS=${TARGETS:-linux/amd64 darwin/amd64}
 ROOT=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
 
-pushd $REPO_ROOT
-newgopath=${ROOT%%/gopath/*}/gopath
-if [[ -d ${newgopath} ]]; then
-	if [[ -z ${GOPATH} ]]; then
-		GOPATH="${newgopath}"
-	else
-		GOPATH="${newgopath}:${GOPATH}"
-	fi
-	PATH="${PATH}:${newgopath}/bin"
-fi
-echo ">> Using GOPATH ${GOPATH}"
+export GO111MODULE=on
 go get github.com/mitchellh/gox
-popd
 
 if [[ -n ${STATIC_BINARY} && ${STATIC_BINARY} != "false" ]]; then
 	export CGO_ENABLED=0
