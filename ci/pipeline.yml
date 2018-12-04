@@ -313,6 +313,7 @@ resources:
       branch:            version
       file:              version
       git_user:          (( concat meta.git.name " <" meta.git.email ">" ))
+      private_key:       (( grab meta.github.private_key ))
       initial_version:   (( grab meta.initial_version || "0.0.1" ))
 
   - name: notify
