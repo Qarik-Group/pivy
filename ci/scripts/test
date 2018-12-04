@@ -4,6 +4,7 @@ set -e
 
 export GO111MODULE=on
 
+pushd git
 go version; echo; echo
 go vet $(go list ./... | grep -v vendor)
 go test -v ./...
