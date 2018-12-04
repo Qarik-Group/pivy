@@ -1,0 +1,29 @@
+---
+meta:
+  name:    pivy
+  target:  ci2
+  url:     https://ci2.starkandwayne.com
+
+  initial_version: 0.1.0
+
+  go:
+    version: "1.11"
+    binary: pivy
+    cmd_module: .
+
+  git:
+    email:  ((git-commit-email))
+    name:   ((git-commit-name))
+
+  github:
+    owner:  starkandwayne
+    repo:   pivy
+    branch: master
+    private_key:  ((github-private-key))
+    access_token: ((github-access-token))
+
+  slack:
+    webhook:       ((slack-webhook))
+    username:      ((slack-username))
+    icon:          ((slack-icon-url))
+    channel:       "#pivy"
