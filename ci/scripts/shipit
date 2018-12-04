@@ -41,18 +41,19 @@ go version; echo; echo
 TARGETS=${TARGETS:-linux/amd64 darwin/amd64}
 ROOT=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )
 
-export GO111MODULE=on
 go get github.com/mitchellh/gox
 
 if [[ -n ${STATIC_BINARY} && ${STATIC_BINARY} != "false" ]]; then
-	export CGO_ENABLED=0
+    export CGO_ENABLED=0
 fi
 
 pushd $REPO_ROOT
+export GO111MODULE=on
+
 mkdir artifacts
 gox -osarch="${TARGETS}" --output="artifacts/${BINARY}-{{.OS}}-{{.Arch}}" -ldflags="-X main.Version=${VERSION}" ./...
 go build -o "${BINARY}" -ldflags="-X main.Version=${VERSION}" ${CMD_PKG:-.}
-./${BINARY} -v
+./${BINARY} --version
 popd
 
 echo "v${VERSION}"                         > ${RELEASE_ROOT}/tag
