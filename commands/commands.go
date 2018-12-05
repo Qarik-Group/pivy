@@ -31,8 +31,9 @@ func Configure(logger *log.Logger, app *kingpin.Application) {
 	).Required().OverrideDefaultFromEnvar("PIVNET_API_TOKEN").Short('t').StringVar(&global.pivnetToken)
 
 	cmds := []register{
-		&ConfigTemplateCommand{logger: logger, global: &global},
 		&DownloadCommand{logger: logger, global: &global},
+		&ConfigTemplateCommand{logger: logger, global: &global},
+		&GolangTemplateCommand{logger: logger, global: &global},
 	}
 
 	for _, c := range cmds {
