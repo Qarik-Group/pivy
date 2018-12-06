@@ -9,9 +9,9 @@ import (
 	. "github.com/dave/jennifer/jen"
 	"github.com/iancoleman/strcase"
 	"github.com/pivotal-cf/kiln/proofing"
+	"github.com/starkandwayne/pivy/metadata"
 	"github.com/starkandwayne/pivy/pivnet"
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
-	yaml "gopkg.in/yaml.v2"
 )
 
 type GolangTemplateCommand struct {
@@ -43,21 +43,24 @@ func (cmd *GolangTemplateCommand) run(c *kingpin.ParseContext) error {
 		return err
 	}
 
-	var template proofing.ProductTemplate
-	err = yaml.Unmarshal(metaData, &template)
+	parser, err := metadata.NewParser(metaData)
 	if err != nil {
-		return fmt.Errorf("could not parse metadata: %s", err)
+		return fmt.Errorf("creating parser failed: %s", err)
 	}
 
 	var fields []Code
-	for _, property := range template.AllPropertyBlueprints() {
+	for _, property := range parser.AllPropertyBlueprints() {
 		if !property.Configurable {
 			continue
 		}
 		tag := jsonTag(property.Property, !property.Required || property.Default != nil)
-		label, _ := lookUpLabel(template, property.Property)
-		if label != "" {
+		label, ok := parser.GetPropertyLabel(property)
+		if ok {
 			fields = append(fields, Comment(label))
+		}
+		description, ok := parser.GetPropertyDescription(property)
+		if ok {
+			fields = append(fields, Comment(description))
 		}
 		if property.Default != nil {
 			d, _ := json.Marshal(property.Default)
@@ -124,37 +127,4 @@ func jsonTag(str string, omitEmpty bool) map[string]string {
 	} else {
 		return map[string]string{"json": str}
 	}
-}
-
-func lookUpLabel(template proofing.ProductTemplate, reference string) (string, bool) {
-	for _, form := range template.FormTypes {
-		for _, prop := range form.PropertyInputs {
-			if prop, ok := prop.(proofing.SimplePropertyInput); ok {
-				if prop.Reference == reference {
-					return prop.Label, true
-				}
-			}
-			if prop, ok := prop.(proofing.CollectionPropertyInput); ok {
-				if prop.Reference == reference {
-					return prop.Label, true
-				}
-			}
-			if prop, ok := prop.(proofing.CollectionSubfieldPropertyInput); ok {
-				if prop.Reference == reference {
-					return prop.Label, true
-				}
-			}
-			if prop, ok := prop.(proofing.SelectorPropertyInput); ok {
-				if prop.Reference == reference {
-					return prop.Label, true
-				}
-			}
-			if prop, ok := prop.(proofing.SelectorOptionPropertyInput); ok {
-				if prop.Reference == reference {
-					return prop.Label, true
-				}
-			}
-		}
-	}
-	return "", false
 }
