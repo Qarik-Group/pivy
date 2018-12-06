@@ -45,6 +45,28 @@ func (p *metaDataParser) AllPropertyBlueprints() []proofing.NormalizedPropertyBl
 	return p.parsedTemplate.AllPropertyBlueprints()
 }
 
+func (p *metaDataParser) GetCollectionProperties(property proofing.NormalizedPropertyBlueprint) []proofing.NormalizedPropertyBlueprint {
+	pb, ok := p.lookupRawPropertyField(property, "property_blueprints")
+	if !ok {
+		return []proofing.NormalizedPropertyBlueprint{}
+	}
+	o := gabs.New()
+	o.Array("property_blueprints")
+	children, err := pb.Children()
+	if err != nil {
+		return []proofing.NormalizedPropertyBlueprint{}
+	}
+	for _, child := range children {
+		o.ArrayAppend(child.Data(), "property_blueprints")
+	}
+	r := bytes.NewReader(o.Bytes())
+	parsedTemplate, err := proofing.Parse(r)
+	if err != nil {
+		return []proofing.NormalizedPropertyBlueprint{}
+	}
+	return parsedTemplate.AllPropertyBlueprints()
+}
+
 func (p *metaDataParser) GetPropertyLabel(property proofing.NormalizedPropertyBlueprint) (string, bool) {
 	return p.lookupPropertyFieldString(property, "label")
 }
@@ -53,15 +75,23 @@ func (p *metaDataParser) GetPropertyDescription(property proofing.NormalizedProp
 	return p.lookupPropertyFieldString(property, "description")
 }
 
-func (p *metaDataParser) lookupPropertyFieldString(property proofing.NormalizedPropertyBlueprint, field string) (string, bool) {
+func (p *metaDataParser) lookupRawPropertyField(property proofing.NormalizedPropertyBlueprint, field string) (*gabs.Container, bool) {
 	rp, ok := p.lookupRawProperty(property)
+	if !ok {
+		return &gabs.Container{}, false
+	}
+	if !rp.Exists(field) {
+		return &gabs.Container{}, false
+	}
+	return rp.Path(field), true
+}
+
+func (p *metaDataParser) lookupPropertyFieldString(property proofing.NormalizedPropertyBlueprint, field string) (string, bool) {
+	rp, ok := p.lookupRawPropertyField(property, field)
 	if !ok {
 		return "", false
 	}
-	if !rp.Exists(field) {
-		return "", false
-	}
-	return rp.Path(field).Data().(string), true
+	return rp.Data().(string), true
 }
 
 func (p *metaDataParser) lookupRawProperty(property proofing.NormalizedPropertyBlueprint) (*gabs.Container, bool) {
