@@ -45,26 +45,25 @@ func (p *metaDataParser) AllPropertyBlueprints() []proofing.NormalizedPropertyBl
 	return p.parsedTemplate.AllPropertyBlueprints()
 }
 
-func (p *metaDataParser) GetCollectionProperties(property proofing.NormalizedPropertyBlueprint) []proofing.NormalizedPropertyBlueprint {
+func (p *metaDataParser) GetCollectionParser(property proofing.NormalizedPropertyBlueprint) *metaDataParser {
 	pb, ok := p.lookupRawPropertyField(property, "property_blueprints")
 	if !ok {
-		return []proofing.NormalizedPropertyBlueprint{}
+		return &metaDataParser{}
 	}
 	o := gabs.New()
 	o.Array("property_blueprints")
 	children, err := pb.Children()
 	if err != nil {
-		return []proofing.NormalizedPropertyBlueprint{}
+		return &metaDataParser{}
 	}
 	for _, child := range children {
 		o.ArrayAppend(child.Data(), "property_blueprints")
 	}
-	r := bytes.NewReader(o.Bytes())
-	parsedTemplate, err := proofing.Parse(r)
+	parser, err := NewParser(o.Bytes())
 	if err != nil {
-		return []proofing.NormalizedPropertyBlueprint{}
+		return &metaDataParser{}
 	}
-	return parsedTemplate.AllPropertyBlueprints()
+	return parser
 }
 
 func (p *metaDataParser) GetPropertyLabel(property proofing.NormalizedPropertyBlueprint) (string, bool) {
@@ -99,7 +98,8 @@ func (p *metaDataParser) lookupRawProperty(property proofing.NormalizedPropertyB
 	name := parts[len(parts)-1]
 	properties, _ := p.rawTemplate.S("property_blueprints").Children()
 	for _, property := range properties {
-		if property.Path("name").Data().(string) == name {
+		n, ok := property.Path("name").Data().(string)
+		if ok && n == name {
 			return property, true
 		}
 	}

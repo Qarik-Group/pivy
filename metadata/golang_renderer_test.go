@@ -4,21 +4,23 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	. "github.com/starkandwayne/pivy/metadata"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/format"
 )
 
 var _ = Describe("GolangRenderer", func() {
+	//	format.TruncatedDiff = true
 	var (
 		out string
 	)
 	// standardizeSpaces: remove redudant spaces for more context in diff
 	standardizeSpaces := func(s string) string {
-		return strings.Join(strings.Fields(s), " ")
+		return s
+		// return strings.Join(strings.Fields(s), " ")
 	}
 	parse := func(m string) {
 		parser, err := NewParser([]byte(m))
@@ -37,9 +39,11 @@ var _ = Describe("GolangRenderer", func() {
 	}
 
 	Describe("given metadata with property_blueprints", func() {
+		format.TruncatedDiff = false
+
 		It("renders a go file with property struct", func() {
 			parse(readAsset("property_blueprints.yml"))
-			Expect(out).To(Equal(standardizeSpaces(readAsset("property_blueprints.go.result"))))
+			Expect(out).To(Equal(standardizeSpaces(readAsset("property_blueprints.go"))))
 		})
 	})
 })

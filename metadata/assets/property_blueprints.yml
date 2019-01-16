@@ -1,5 +1,7 @@
 property_blueprints:
 - configurable: true
+  label: org label
+  description: org description
   default: system
   name: org
   type: string
