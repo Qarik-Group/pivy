@@ -9,7 +9,7 @@ import (
 	"github.com/pivotal-cf/kiln/proofing"
 )
 
-func (p *metaDataParser) RenderToGolang() (*File, error) {
+func (p *metaDataParser) RenderToGolang() (string, error) {
 
 	var fields []Code
 	for _, property := range p.AllPropertyBlueprints() {
@@ -44,7 +44,7 @@ func (p *metaDataParser) RenderToGolang() (*File, error) {
 	f := NewFile("tiles")
 	f.Type().Id("properties").Struct(fields...)
 
-	return f, nil
+	return f.GoString(), nil
 }
 
 func propertyToId(property proofing.NormalizedPropertyBlueprint) string {

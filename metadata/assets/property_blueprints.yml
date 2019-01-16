@@ -1,0 +1,23 @@
+property_blueprints:
+- configurable: true
+  default: system
+  name: org
+  type: string
+- configurable: true
+  name: bigtable_custom_plans
+  optional: true
+  property_blueprints:
+  - name: guid
+    optional: false
+    type: uuid
+    unique: true
+  - configurable: true
+    name: name
+    type: string
+    unique: true
+  - configurable: true
+    description: Name of the plan to be displayed to users.
+    label: Display Name
+    name: display_name
+    type: string
+  type: collection

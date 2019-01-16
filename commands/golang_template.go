@@ -46,6 +46,6 @@ func (cmd *GolangTemplateCommand) run(c *kingpin.ParseContext) error {
 	if err != nil {
 		return fmt.Errorf("redendering golang failed: %s", err)
 	}
-	fmt.Printf("%#v", f)
+	fmt.Println(f)
 	return nil
 }

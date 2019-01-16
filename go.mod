@@ -21,6 +21,8 @@ require (
 	github.com/mholt/archiver v3.1.0+incompatible
 	github.com/nwaples/rardecode v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.1 // indirect
+	github.com/onsi/ginkgo v1.6.0
+	github.com/onsi/gomega v1.4.2
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/pivotal-cf/go-pivnet v0.0.50
 	github.com/pivotal-cf/jhanda v0.0.0-20181025233525-e6aa09a032df // indirect
