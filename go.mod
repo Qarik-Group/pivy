@@ -30,6 +30,7 @@ require (
 	github.com/pivotal-cf/kiln v0.0.0-20181201001855-3e8211a50c91
 	github.com/pivotal-cf/om v0.0.0-20181130184206-81ba5acde680
 	github.com/pivotal-cf/pivnet-cli v0.0.55
+	github.com/sergi/go-diff v1.0.0
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/ulikunitz/xz v0.5.5 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect

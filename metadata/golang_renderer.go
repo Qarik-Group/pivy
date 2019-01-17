@@ -55,17 +55,25 @@ func (r *structRenderer) addFieldsForProperties(properties []proofing.Normalized
 		}
 		tag := jsonTag(property.Property, !property.Required || property.Default != nil)
 
-		switch property.Type {
-		case "collection":
+		if property.Type == "collection" {
 			cp := r.parser.GetCollectionParser(property)
 			cr := newStructRenderer(cp)
 			cr.addFieldsForProperties(cp.AllPropertyBlueprints())
-			*r.fields = append(*r.fields, Id(propertyToId(property)).
-				Index().Struct(*cr.fields...).Tag(tag), Line())
-		default:
-			*r.fields = append(*r.fields, Id(propertyToId(property)).
-				Struct(propertyToValueStruct(property)).Tag(tag), Line())
+			field := Id(propertyToId(property)).Struct(
+				Id("Value").Index().Struct(*cr.fields...).
+					Tag(jsonTag("value", false)),
+			).Tag(tag)
+			*r.fields = append(*r.fields, field)
+			continue
 		}
+		if r.parser.collection {
+			*r.fields = append(*r.fields, Id(propertyToId(property)).
+				Add(propertyToStruct(property)).Tag(tag))
+			continue
+		}
+		*r.fields = append(*r.fields, Id(propertyToId(property)).
+			Struct(propertyToValueStruct(property)).Tag(tag), Line())
+
 	}
 }
 

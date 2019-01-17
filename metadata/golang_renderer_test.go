@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	. "github.com/starkandwayne/pivy/metadata"
+	. "github.com/starkandwayne/pivy/string_diff_matcher"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -43,7 +44,7 @@ var _ = Describe("GolangRenderer", func() {
 
 		It("renders a go file with property struct", func() {
 			parse(readAsset("property_blueprints.yml"))
-			Expect(out).To(Equal(standardizeSpaces(readAsset("property_blueprints.go"))))
+			Expect(out).To(EqualWithDiff(standardizeSpaces(readAsset("property_blueprints.go"))))
 		})
 	})
 })

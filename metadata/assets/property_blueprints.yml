@@ -1,12 +1,10 @@
 property_blueprints:
 - configurable: true
-  label: org label
-  description: org description
   default: system
   name: org
   type: string
 - configurable: true
-  name: bigtable_custom_plans
+  name: users
   optional: true
   property_blueprints:
   - name: guid
@@ -18,8 +16,9 @@ property_blueprints:
     type: string
     unique: true
   - configurable: true
-    description: Name of the plan to be displayed to users.
-    label: Display Name
     name: display_name
     type: string
+  - configurable: true
+    type: secret
+    name: password
   type: collection

@@ -13,6 +13,7 @@ import (
 type metaDataParser struct {
 	parsedTemplate proofing.ProductTemplate
 	rawTemplate    *gabs.Container
+	collection     bool
 }
 
 func NewParser(metaData []byte) (*metaDataParser, error) {
@@ -36,12 +37,22 @@ func NewParser(metaData []byte) (*metaDataParser, error) {
 		return &metaDataParser{},
 			fmt.Errorf("second parse metadata failed: %s", err)
 	}
-
+	p.collection = false
 	return &p, err
 
 }
 
 func (p *metaDataParser) AllPropertyBlueprints() []proofing.NormalizedPropertyBlueprint {
+	if p.collection {
+		var propertyBlueprints []proofing.NormalizedPropertyBlueprint
+
+		propertyBlueprints = make([]proofing.NormalizedPropertyBlueprint, 0, len(p.parsedTemplate.PropertyBlueprints))
+
+		for _, pb := range p.parsedTemplate.PropertyBlueprints {
+			propertyBlueprints = append(propertyBlueprints, pb.Normalize("")...)
+		}
+		return propertyBlueprints
+	}
 	return p.parsedTemplate.AllPropertyBlueprints()
 }
 
@@ -63,6 +74,7 @@ func (p *metaDataParser) GetCollectionParser(property proofing.NormalizedPropert
 	if err != nil {
 		return &metaDataParser{}
 	}
+	parser.collection = true
 	return parser
 }
 

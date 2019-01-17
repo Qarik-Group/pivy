@@ -90,6 +90,8 @@ github.com/pivotal-cf/pivnet-cli v0.0.55/go.mod h1:GIenTUfi8rXtvDXnOuUMfQ+ZofegQ
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/robdimsdale/sanitizer v0.0.0-20160522134901-ab2334cb7539/go.mod h1:tqCODtkKV+9Tfvt9JURvKCTxJ69bA/OU/QhsaQLK/rc=
+github.com/sergi/go-diff v1.0.0 h1:Kpca3qRNrduNnOQeazBd0ysaKrUJiIuISHxogkT9RPQ=
+github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/shirou/gopsutil v0.0.0-20180927124308-a11c78ba2c13 h1:hzFIj+Ky1KX599VGAVY//20nam1rYKwQwNVix1sYhXo=
 github.com/shirou/gopsutil v0.0.0-20180927124308-a11c78ba2c13/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
