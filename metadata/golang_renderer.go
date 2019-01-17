@@ -34,9 +34,13 @@ func (p *metaDataParser) RenderToGolang() (string, error) {
 	return f.GoString(), nil
 }
 
-func propertyToId(property proofing.NormalizedPropertyBlueprint) string {
+func propertyToName(property proofing.NormalizedPropertyBlueprint) string {
 	parts := strings.Split(property.Property, ".")
-	return strcase.ToCamel(parts[len(parts)-1])
+	return parts[len(parts)-1]
+}
+
+func propertyToId(property proofing.NormalizedPropertyBlueprint) string {
+	return strcase.ToCamel(propertyToName(property))
 }
 
 func (r *structRenderer) fieldsForProperties(properties []proofing.NormalizedPropertyBlueprint) []Code {
@@ -53,11 +57,19 @@ func (r *structRenderer) fieldsForProperties(properties []proofing.NormalizedPro
 		if ok {
 			fields = append(fields, Comment(description))
 		}
+
+		var dc Code
 		if property.Default != nil {
 			d, _ := json.Marshal(property.Default)
-			fields = append(fields, Commentf("default: %s", string(d)))
+			dc = Commentf("default: %s", string(d))
 		}
-		tag := jsonTag(property.Property, !property.Required || property.Default != nil)
+
+		tagName := property.Property
+		if r.parser.collection {
+			tagName = propertyToName(property)
+		}
+
+		tag := jsonTag(tagName, !property.Required || property.Default != nil)
 
 		if property.Type == "collection" {
 			cp := r.parser.GetCollectionParser(property)
@@ -66,14 +78,14 @@ func (r *structRenderer) fieldsForProperties(properties []proofing.NormalizedPro
 				Id("Value").Index().Struct(
 					cr.fieldsForProperties(
 						cp.AllPropertyBlueprints())...).
-					Tag(jsonTag("value", false)),
+					Tag(jsonTag("value", false)).Add(dc),
 			).Tag(tag)
 			fields = append(fields, field)
 			continue
 		}
 		if r.parser.collection {
 			fields = append(fields, Id(propertyToId(property)).
-				Add(propertyToStruct(property)).Tag(tag))
+				Add(propertyToStruct(property)).Tag(tag).Add(dc))
 			continue
 		}
 		fields = append(fields, Id(propertyToId(property)).
@@ -111,7 +123,13 @@ func (r *structRenderer) fieldsForResources(jobs []proofing.JobType) []Code {
 }
 
 func propertyToValueStruct(property proofing.NormalizedPropertyBlueprint) Code {
-	return Id("Value").Add(propertyToStruct(property)).Tag(jsonTag("value", false))
+	var dc Code
+	if property.Default != nil {
+		d, _ := json.Marshal(property.Default)
+		dc = Commentf("default: %s", string(d))
+	}
+	return Id("Value").Add(propertyToStruct(property)).
+		Tag(jsonTag("value", false)).Add(dc)
 }
 
 func propertyToStruct(property proofing.NormalizedPropertyBlueprint) Code {
@@ -121,7 +139,9 @@ func propertyToStruct(property proofing.NormalizedPropertyBlueprint) Code {
 	case "integer", "port":
 		return Int()
 	case "secret":
-		return Struct(Id("Secret").String().Tag(jsonTag("secret", false)))
+		return Struct(
+			Id("Secret").String().Tag(jsonTag("secret", false)),
+		)
 	case "simple_credentials":
 		return Struct(
 			Id("Identity").String().Tag(jsonTag("identity", false)),

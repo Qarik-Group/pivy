@@ -19,6 +19,7 @@ property_blueprints:
   - configurable: true
     name: display_name
     type: string
+    default: anonymous
   - configurable: true
     type: secret
     name: password
