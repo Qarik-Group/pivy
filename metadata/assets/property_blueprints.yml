@@ -1,3 +1,4 @@
+name: foo-bar
 property_blueprints:
 - configurable: true
   default: system

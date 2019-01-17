@@ -10,24 +10,27 @@ import (
 )
 
 type structRenderer struct {
-	fields *[]Code
 	parser *metaDataParser
 }
 
 func newStructRenderer(p *metaDataParser) *structRenderer {
-	var fields []Code
-	r := structRenderer{
-		fields: &fields,
-		parser: p,
-	}
+	r := structRenderer{parser: p}
 	return &r
 }
 
 func (p *metaDataParser) RenderToGolang() (string, error) {
 	r := newStructRenderer(p)
-	r.addFieldsForProperties(p.AllPropertyBlueprints())
-	f := NewFile("tiles")
-	f.Type().Id("properties").Struct(*r.fields...)
+	name := strcase.ToSnake(p.parsedTemplate.Name)
+	f := NewFile(name)
+	f.Type().Id("ProductConfig").Struct(
+		Id("ProductProperties").Struct(
+			r.fieldsForProperties(p.AllPropertyBlueprints())...).
+			Tag(jsonTag("product-properties", false)),
+		Id("ResourceConfig").Struct(
+			r.fieldsForResources(p.parsedTemplate.JobTypes)...,
+		).
+			Tag(jsonTag("resource-config", false)),
+	)
 	return f.GoString(), nil
 }
 
@@ -36,45 +39,75 @@ func propertyToId(property proofing.NormalizedPropertyBlueprint) string {
 	return strcase.ToCamel(parts[len(parts)-1])
 }
 
-func (r *structRenderer) addFieldsForProperties(properties []proofing.NormalizedPropertyBlueprint) {
+func (r *structRenderer) fieldsForProperties(properties []proofing.NormalizedPropertyBlueprint) []Code {
+	var fields []Code
 	for _, property := range properties {
 		if !property.Configurable {
 			continue
 		}
 		label, ok := r.parser.GetPropertyLabel(property)
 		if ok {
-			*r.fields = append(*r.fields, Comment(label))
+			fields = append(fields, Comment(label))
 		}
 		description, ok := r.parser.GetPropertyDescription(property)
 		if ok {
-			*r.fields = append(*r.fields, Comment(description))
+			fields = append(fields, Comment(description))
 		}
 		if property.Default != nil {
 			d, _ := json.Marshal(property.Default)
-			*r.fields = append(*r.fields, Commentf("default: %s", string(d)))
+			fields = append(fields, Commentf("default: %s", string(d)))
 		}
 		tag := jsonTag(property.Property, !property.Required || property.Default != nil)
 
 		if property.Type == "collection" {
 			cp := r.parser.GetCollectionParser(property)
 			cr := newStructRenderer(cp)
-			cr.addFieldsForProperties(cp.AllPropertyBlueprints())
 			field := Id(propertyToId(property)).Struct(
-				Id("Value").Index().Struct(*cr.fields...).
+				Id("Value").Index().Struct(
+					cr.fieldsForProperties(
+						cp.AllPropertyBlueprints())...).
 					Tag(jsonTag("value", false)),
 			).Tag(tag)
-			*r.fields = append(*r.fields, field)
+			fields = append(fields, field)
 			continue
 		}
 		if r.parser.collection {
-			*r.fields = append(*r.fields, Id(propertyToId(property)).
+			fields = append(fields, Id(propertyToId(property)).
 				Add(propertyToStruct(property)).Tag(tag))
 			continue
 		}
-		*r.fields = append(*r.fields, Id(propertyToId(property)).
+		fields = append(fields, Id(propertyToId(property)).
 			Struct(propertyToValueStruct(property)).Tag(tag), Line())
 
 	}
+	return fields
+}
+
+func (r *structRenderer) fieldsForResources(jobs []proofing.JobType) []Code {
+	var fields []Code
+	for _, job := range jobs {
+		instance := job.InstanceDefinition
+		if !instance.Configurable {
+			continue
+		}
+		omitEmpty := (instance.ZeroIf != proofing.ZeroIfBinding{} || instance.Default != 0)
+		tag := jsonTag(job.Name, omitEmpty)
+		fields = append(fields, Id(strcase.ToCamel(job.Name)).
+			Struct(
+				Id("Instances").String().Tag(jsonTag("instances", omitEmpty)).
+					Commentf("default: %v", instance.Default),
+				Id("InstanceType").Struct(
+					Id("ID").String().Tag(jsonTag("id", false)),
+				).Tag(jsonTag("instance_type", omitEmpty)),
+				Id("PersistentDisk").Struct(
+					Id("SizeMB").String().Tag(jsonTag("size_mb", false)),
+				).Tag(jsonTag("persistent_disk", omitEmpty)),
+				Id("InternetConnected").Bool().Tag(jsonTag("internet_connected", omitEmpty)),
+				Id("ELBNames").Index().String().Tag(jsonTag("elb_names", omitEmpty)),
+			).Tag(tag), Line())
+
+	}
+	return fields
 }
 
 func propertyToValueStruct(property proofing.NormalizedPropertyBlueprint) Code {
