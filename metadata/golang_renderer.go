@@ -26,12 +26,14 @@ func (p *metaDataParser) RenderToGolang() (string, error) {
 	f.Type().Id(label).Struct(
 		Id("ProductName").String().Tag(jsonTag("product-name", false)),
 		Id("ProductProperties").Struct(
-			r.fieldsForProperties(p.AllPropertyBlueprints())...).
-			Tag(jsonTag("product-properties", false)),
+			r.fieldsForProperties(p.AllPropertyBlueprints())...,
+		).Tag(jsonTag("product-properties", false)),
 		Id("ResourceConfig").Struct(
 			r.fieldsForResources(p.parsedTemplate.JobTypes)...,
-		).
-			Tag(jsonTag("resource-config", false)),
+		).Tag(jsonTag("resource-config", false)),
+		Id("NetworkProperties").Struct(
+			r.fieldsForNetworks(p.parsedTemplate.ServiceBroker)...,
+		).Tag(jsonTag("network-properties", false)),
 	)
 	f.Func().Params(Id("pc").Op("*").Id(label)).Id("ToJson").Params().
 		Params(Index().Byte(), Id("error")).Block(
@@ -125,6 +127,26 @@ func (r *structRenderer) fieldsForResources(jobs []proofing.JobType) []Code {
 				Id("ELBNames").Index().String().Tag(jsonTag("elb_names", omitEmpty)),
 			).Tag(tag), Line())
 
+	}
+	return fields
+}
+
+func (r *structRenderer) fieldsForNetworks(serviceBroker bool) []Code {
+	fields := []Code{
+		Id("SingletonAvailabilityZone").Struct(
+			Id("Name").String().Tag(jsonTag("name", false)),
+		).Tag(jsonTag("singleton_availability_zone", false)),
+		Id("OtherAvailabilityZones").Index().Struct(
+			Id("Name").String().Tag(jsonTag("name", false)),
+		).Tag(jsonTag("other_availability_zones", false)),
+		Id("Network").Struct(
+			Id("Name").String().Tag(jsonTag("name", false)),
+		).Tag(jsonTag("network", false)),
+	}
+	if serviceBroker {
+		fields = append(fields, Id("ServiceNetwork").Struct(
+			Id("Name").String().Tag(jsonTag("name", false)),
+		).Tag(jsonTag("service_network", false)))
 	}
 	return fields
 }
