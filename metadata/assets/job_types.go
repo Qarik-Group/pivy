@@ -1,6 +1,9 @@
-package example
+package tiles
 
-type ProductConfig struct {
+import "encoding/json"
+
+type ExampleTile struct {
+	ProductName       string   `json:"product-name"`
 	ProductProperties struct{} `json:"product-properties"`
 	ResourceConfig    struct {
 		Mysql struct {
@@ -15,4 +18,20 @@ type ProductConfig struct {
 			ELBNames          []string `json:"elb_names,omitempty"`
 		} `json:"mysql,omitempty"`
 	} `json:"resource-config"`
+	NetworkProperties struct {
+		SingletonAvailabilityZone struct {
+			Name string `json:"name"`
+		} `json:"singleton_availability_zone"`
+		OtherAvailabilityZones []struct {
+			Name string `json:"name"`
+		} `json:"other_availability_zones"`
+		Network struct {
+			Name string `json:"name"`
+		} `json:"network"`
+	} `json:"network-properties"`
+}
+
+func (pc *ExampleTile) ToJson() ([]byte, error) {
+	pc.ProductName = "example"
+	return json.Marshal(pc)
 }
