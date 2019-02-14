@@ -20,9 +20,11 @@ func newStructRenderer(p *metaDataParser) *structRenderer {
 
 func (p *metaDataParser) RenderToGolang() (string, error) {
 	r := newStructRenderer(p)
-	name := strcase.ToSnake(p.parsedTemplate.Name)
-	f := NewFile(name)
-	f.Type().Id("ProductConfig").Struct(
+	label := strcase.ToCamel(p.parsedTemplate.Label)
+	name := p.parsedTemplate.Name
+	f := NewFile("tiles")
+	f.Type().Id(label).Struct(
+		Id("ProductName").String().Tag(jsonTag("product-name", false)),
 		Id("ProductProperties").Struct(
 			r.fieldsForProperties(p.AllPropertyBlueprints())...).
 			Tag(jsonTag("product-properties", false)),
@@ -30,6 +32,11 @@ func (p *metaDataParser) RenderToGolang() (string, error) {
 			r.fieldsForResources(p.parsedTemplate.JobTypes)...,
 		).
 			Tag(jsonTag("resource-config", false)),
+	)
+	f.Func().Params(Id("pc").Op("*").Id(label)).Id("ToJson").Params().
+		Params(Index().Byte(), Id("error")).Block(
+		Id("pc").Dot("ProductName").Op("=").Lit(name),
+		Return().Qual("encoding/json", "Marshal").Call(Id("pc")),
 	)
 	return f.GoString(), nil
 }
