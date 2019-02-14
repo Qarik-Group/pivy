@@ -1,0 +1,5 @@
+name: example
+label: example tile
+property_blueprints: []
+job_types: []
+service_broker: true

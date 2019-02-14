@@ -47,4 +47,13 @@ var _ = Describe("GolangRenderer", func() {
 			Expect(out).To(EqualWithDiff(readAsset("job_types.go")))
 		})
 	})
+
+	Describe("given metadata with service_broker: true", func() {
+		format.TruncatedDiff = false
+
+		It("renders a go file with services_network", func() {
+			parse(readAsset("service_broker.yml"))
+			Expect(out).To(EqualWithDiff(readAsset("service_broker.go")))
+		})
+	})
 })
