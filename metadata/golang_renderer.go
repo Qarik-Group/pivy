@@ -115,20 +115,22 @@ func (r *structRenderer) fieldsForResources(jobs []proofing.JobType) []Code {
 		if !instance.Configurable {
 			continue
 		}
+
 		omitEmpty := (instance.ZeroIf != proofing.ZeroIfBinding{} || instance.Default != 0)
 		tag := jsonTag(job.Name, omitEmpty)
+
 		fields = append(fields, Id(strcase.ToCamel(job.Name)).
 			Struct(
-				Id("Instances").String().Tag(jsonTag("instances", omitEmpty)).
+				Id("Instances").Op("*").String().Tag(jsonTag("instances", omitEmpty)).
 					Commentf("default: %v", instance.Default),
 				Id("InstanceType").Struct(
-					Id("ID").String().Tag(jsonTag("id", false)),
+					Id("ID").Op("*").String().Tag(jsonTag("id", false)),
 				).Tag(jsonTag("instance_type", omitEmpty)),
 				Id("PersistentDisk").Struct(
-					Id("SizeMB").String().Tag(jsonTag("size_mb", false)),
+					Id("SizeMB").Op("*").String().Tag(jsonTag("size_mb", false)),
 				).Tag(jsonTag("persistent_disk", omitEmpty)),
-				Id("InternetConnected").Bool().Tag(jsonTag("internet_connected", omitEmpty)),
-				Id("ELBNames").Index().String().Tag(jsonTag("elb_names", omitEmpty)),
+				Id("InternetConnected").Op("*").Bool().Tag(jsonTag("internet_connected", omitEmpty)),
+				Id("ELBNames").Op("*").Index().String().Tag(jsonTag("elb_names", omitEmpty)),
 			).Tag(tag), Line())
 
 	}
