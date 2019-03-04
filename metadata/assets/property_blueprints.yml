@@ -25,3 +25,19 @@ property_blueprints:
     type: secret
     name: password
   type: collection
+- configurable: true
+  default: internal
+  name: db
+  type: selector
+  option_templates:
+  - name: internal
+    named_manifests: []
+    select_value: internal
+    property_blueprints: []
+  - name: external
+    named_manifests: []
+    select_value: external
+    property_blueprints:
+    - configurable: true
+      name: hostname
+      type: string

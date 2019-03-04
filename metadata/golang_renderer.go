@@ -44,8 +44,13 @@ func (p *metaDataParser) RenderToGolang() (string, error) {
 }
 
 func propertyToName(property proofing.NormalizedPropertyBlueprint) string {
-	parts := strings.Split(property.Property, ".")
-	return parts[len(parts)-1]
+	return strings.Replace(
+		strings.TrimPrefix(
+			strings.TrimPrefix(property.Property, "."),
+			"properties.",
+		),
+		".", "_", -1,
+	)
 }
 
 func propertyToId(property proofing.NormalizedPropertyBlueprint) string {

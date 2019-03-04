@@ -18,6 +18,13 @@ type FooBar struct {
 				} `json:"password"`
 			} `json:"value"`
 		} `json:".properties.users,omitempty"`
+		Db *struct {
+			Value string `json:"value"` // default: "internal"
+		} `json:".properties.db,omitempty"`
+
+		DbExternalHostname struct {
+			Value string `json:"value"`
+		} `json:".properties.db.external.hostname"`
 	} `json:"product-properties"`
 	ResourceConfig    struct{} `json:"resource-config"`
 	NetworkProperties struct {
