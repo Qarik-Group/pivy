@@ -87,6 +87,8 @@ github.com/pivotal-cf/om v0.0.0-20181130184206-81ba5acde680 h1:bQElu4y+5DKjxqDdL
 github.com/pivotal-cf/om v0.0.0-20181130184206-81ba5acde680/go.mod h1:lvUXUJbWlZpq3odWwJ67T2IbKSNxkvUuLOooTFo98t8=
 github.com/pivotal-cf/pivnet-cli v0.0.55 h1:R8mnLHUVb9DWuVqHdmkLCltG7bUTJq9nj5OexPt5Y2s=
 github.com/pivotal-cf/pivnet-cli v0.0.55/go.mod h1:GIenTUfi8rXtvDXnOuUMfQ+ZofegQ+7XG2Hby3jB0+4=
+github.com/pivotalservices/tile-config-generator v0.0.14 h1:Vzg2eDAAplfQrMqKt+JyrUCtsQxGdF5WESd7z4b6n9M=
+github.com/pivotalservices/tile-config-generator v0.0.14/go.mod h1:zh+sJ4VmfFlILmgu3zaKqmryET0fKOxtnMQAS6nPsRU=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/robdimsdale/sanitizer v0.0.0-20160522134901-ab2334cb7539/go.mod h1:tqCODtkKV+9Tfvt9JURvKCTxJ69bA/OU/QhsaQLK/rc=

@@ -34,6 +34,7 @@ func Configure(logger *log.Logger, app *kingpin.Application) {
 		&DownloadCommand{logger: logger, global: &global},
 		&ConfigTemplateCommand{logger: logger, global: &global},
 		&GolangTemplateCommand{logger: logger, global: &global},
+		&TileConfigCommand{logger: logger, global: &global},
 	}
 
 	for _, c := range cmds {
