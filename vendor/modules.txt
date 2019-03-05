@@ -1,0 +1,180 @@
+# github.com/Jeffail/gabs v1.1.1
+github.com/Jeffail/gabs
+# github.com/PuerkitoBio/goquery v1.5.0
+github.com/PuerkitoBio/goquery
+# github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f
+github.com/StackExchange/wmi
+# github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc
+github.com/alecthomas/template
+github.com/alecthomas/template/parse
+# github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf
+github.com/alecthomas/units
+# github.com/andybalholm/cascadia v1.0.0
+github.com/andybalholm/cascadia
+# github.com/bmatcuk/doublestar v1.1.1
+github.com/bmatcuk/doublestar
+# github.com/charlievieth/fs v0.0.0-20170613215519-7dc373669fa1
+github.com/charlievieth/fs
+# github.com/cloudfoundry/bosh-cli v5.4.0+incompatible
+github.com/cloudfoundry/bosh-cli/director/template
+# github.com/cloudfoundry/bosh-utils v0.0.0-20181129005327-aac85884fcb9
+github.com/cloudfoundry/bosh-utils/errors
+github.com/cloudfoundry/bosh-utils/system
+github.com/cloudfoundry/bosh-utils/logger
+# github.com/cppforlife/go-patch v0.0.0-20171006213518-250da0e0e68c
+github.com/cppforlife/go-patch/patch
+# github.com/dave/jennifer v1.2.0
+github.com/dave/jennifer/jen
+# github.com/dsnet/compress v0.0.0-20171208185109-cc9eb1d7ad76
+github.com/dsnet/compress/bzip2
+github.com/dsnet/compress/bzip2/internal/sais
+github.com/dsnet/compress/internal
+github.com/dsnet/compress/internal/errors
+github.com/dsnet/compress/internal/prefix
+github.com/dsnet/compress
+# github.com/ghodss/yaml v1.0.0
+github.com/ghodss/yaml
+# github.com/go-ole/go-ole v0.0.0-20180625085808-7a0fa49edf48
+github.com/go-ole/go-ole
+github.com/go-ole/go-ole/oleutil
+# github.com/gobwas/glob v0.2.3
+github.com/gobwas/glob
+github.com/gobwas/glob/compiler
+github.com/gobwas/glob/syntax
+github.com/gobwas/glob/match
+github.com/gobwas/glob/syntax/ast
+github.com/gobwas/glob/util/runes
+github.com/gobwas/glob/syntax/lexer
+github.com/gobwas/glob/util/strings
+# github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db
+github.com/golang/snappy
+# github.com/google/go-querystring v1.0.0
+github.com/google/go-querystring/query
+# github.com/hpcloud/tail v1.0.0
+github.com/hpcloud/tail
+github.com/hpcloud/tail/ratelimiter
+github.com/hpcloud/tail/util
+github.com/hpcloud/tail/watch
+github.com/hpcloud/tail/winfile
+# github.com/iancoleman/strcase v0.0.0-20180726023541-3605ed457bf7
+github.com/iancoleman/strcase
+# github.com/jeffallen/seekinghttp v0.0.0-20171214161738-f41d11cb25b7
+github.com/jeffallen/seekinghttp
+# github.com/mattn/go-runewidth v0.0.3
+github.com/mattn/go-runewidth
+# github.com/mholt/archiver v3.1.0+incompatible
+github.com/mholt/archiver
+# github.com/nwaples/rardecode v1.0.0
+github.com/nwaples/rardecode
+# github.com/olekukonko/tablewriter v0.0.1
+github.com/olekukonko/tablewriter
+# github.com/onsi/ginkgo v1.7.0
+github.com/onsi/ginkgo
+github.com/onsi/ginkgo/config
+github.com/onsi/ginkgo/internal/codelocation
+github.com/onsi/ginkgo/internal/failer
+github.com/onsi/ginkgo/internal/remote
+github.com/onsi/ginkgo/internal/suite
+github.com/onsi/ginkgo/internal/testingtproxy
+github.com/onsi/ginkgo/internal/writer
+github.com/onsi/ginkgo/reporters
+github.com/onsi/ginkgo/reporters/stenographer
+github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
+github.com/onsi/ginkgo/types
+github.com/onsi/ginkgo/internal/spec_iterator
+github.com/onsi/ginkgo/internal/containernode
+github.com/onsi/ginkgo/internal/leafnodes
+github.com/onsi/ginkgo/internal/spec
+github.com/onsi/ginkgo/internal/specrunner
+github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
+# github.com/onsi/gomega v1.4.3
+github.com/onsi/gomega/format
+github.com/onsi/gomega/matchers
+github.com/onsi/gomega/types
+github.com/onsi/gomega
+github.com/onsi/gomega/internal/oraclematcher
+github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
+github.com/onsi/gomega/internal/assertion
+github.com/onsi/gomega/internal/asyncassertion
+github.com/onsi/gomega/internal/testingtsupport
+github.com/onsi/gomega/gbytes
+github.com/onsi/gomega/matchers/support/goraph/edge
+github.com/onsi/gomega/matchers/support/goraph/node
+github.com/onsi/gomega/matchers/support/goraph/util
+# github.com/pierrec/lz4 v2.0.5+incompatible
+github.com/pierrec/lz4
+github.com/pierrec/lz4/internal/xxh32
+# github.com/pivotal-cf/go-pivnet v0.0.50
+github.com/pivotal-cf/go-pivnet
+github.com/pivotal-cf/go-pivnet/logshim
+github.com/pivotal-cf/go-pivnet/logger
+github.com/pivotal-cf/go-pivnet/download
+# github.com/pivotal-cf/jhanda v0.0.0-20181025233525-e6aa09a032df
+github.com/pivotal-cf/jhanda
+github.com/pivotal-cf/jhanda/internal/parser
+# github.com/pivotal-cf/kiln v0.0.0-20181201001855-3e8211a50c91
+github.com/pivotal-cf/kiln/proofing
+# github.com/pivotal-cf/om v0.0.0-20181130184206-81ba5acde680
+github.com/pivotal-cf/om/commands
+github.com/pivotal-cf/om/commands/fakes
+github.com/pivotal-cf/om/extractor
+github.com/pivotal-cf/om/api
+github.com/pivotal-cf/om/config
+github.com/pivotal-cf/om/configparser
+github.com/pivotal-cf/om/formcontent
+github.com/pivotal-cf/om/models
+github.com/pivotal-cf/om/presenters
+github.com/pivotal-cf/om/ui
+github.com/pivotal-cf/om/validator
+# github.com/pivotal-cf/pivnet-cli v0.0.55
+github.com/pivotal-cf/pivnet-cli/filter
+github.com/pivotal-cf/pivnet-cli/gp
+# github.com/pivotalservices/tile-config-generator v0.0.14
+github.com/pivotalservices/tile-config-generator/generator
+# github.com/sergi/go-diff v1.0.0
+github.com/sergi/go-diff/diffmatchpatch
+# github.com/shirou/gopsutil v0.0.0-20180927124308-a11c78ba2c13
+github.com/shirou/gopsutil/disk
+github.com/shirou/gopsutil/internal/common
+# github.com/ulikunitz/xz v0.5.5
+github.com/ulikunitz/xz
+github.com/ulikunitz/xz/internal/xlog
+github.com/ulikunitz/xz/lzma
+github.com/ulikunitz/xz/internal/hash
+# github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
+github.com/xi2/xz
+# golang.org/x/net v0.0.0-20190110200230-915654e7eabc
+golang.org/x/net/html/charset
+golang.org/x/net/html
+golang.org/x/net/html/atom
+# golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4
+golang.org/x/sync/errgroup
+# golang.org/x/sys v0.0.0-20190116161447-11f53e031339
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/text v0.3.0
+golang.org/x/text/encoding
+golang.org/x/text/encoding/charmap
+golang.org/x/text/encoding/htmlindex
+golang.org/x/text/transform
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/japanese
+golang.org/x/text/encoding/korean
+golang.org/x/text/encoding/simplifiedchinese
+golang.org/x/text/encoding/traditionalchinese
+golang.org/x/text/encoding/unicode
+golang.org/x/text/language
+golang.org/x/text/internal/utf8internal
+golang.org/x/text/runes
+golang.org/x/text/internal/tag
+# gopkg.in/alecthomas/kingpin.v2 v2.2.6
+gopkg.in/alecthomas/kingpin.v2
+# gopkg.in/cheggaaa/pb.v1 v1.0.26
+gopkg.in/cheggaaa/pb.v1
+# gopkg.in/fsnotify.v1 v1.4.7
+gopkg.in/fsnotify.v1
+# gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
+gopkg.in/tomb.v1
+# gopkg.in/yaml.v2 v2.2.2
+gopkg.in/yaml.v2
