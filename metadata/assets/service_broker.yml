@@ -1,5 +1,5 @@
 name: example
-label: example tile
+label: example service tile
 property_blueprints: []
 job_types: []
 service_broker: true

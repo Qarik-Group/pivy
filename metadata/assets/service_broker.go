@@ -2,7 +2,7 @@ package tiles
 
 import "encoding/json"
 
-type ExampleTile struct {
+type ExampleServiceTile struct {
 	ProductName       string   `json:"product-name"`
 	ProductProperties struct{} `json:"product-properties"`
 	ResourceConfig    struct{} `json:"resource-config"`
@@ -22,7 +22,7 @@ type ExampleTile struct {
 	} `json:"network-properties"`
 }
 
-func (pc *ExampleTile) ToJson() ([]byte, error) {
+func (pc *ExampleServiceTile) ToJson() ([]byte, error) {
 	pc.ProductName = "example"
 	return json.Marshal(pc)
 }
