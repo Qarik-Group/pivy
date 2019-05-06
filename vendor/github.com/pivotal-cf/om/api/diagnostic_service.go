@@ -2,8 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 type DiagnosticProduct struct {
@@ -28,12 +29,17 @@ func (du DiagnosticReportUnavailable) Error() string {
 func (a Api) GetDiagnosticReport() (DiagnosticReport, error) {
 	resp, err := a.sendAPIRequest("GET", "/api/v0/diagnostic_report", nil)
 	if err != nil {
-		if resp.StatusCode == http.StatusInternalServerError {
-			return DiagnosticReport{}, DiagnosticReportUnavailable{}
-		}
-		return DiagnosticReport{}, fmt.Errorf("could not make api request to diagnostic_report endpoint: %s", err)
+		return DiagnosticReport{}, errors.Wrap(err, "could not make api request to diagnostic_report endpoint")
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusInternalServerError {
+		return DiagnosticReport{}, DiagnosticReportUnavailable{}
+	}
+
+	if err = validateStatusOK(resp); err != nil {
+		return DiagnosticReport{}, err
+	}
 
 	var apiResponse *struct {
 		DiagnosticReport
@@ -43,7 +49,7 @@ func (a Api) GetDiagnosticReport() (DiagnosticReport, error) {
 		} `json:"added_products"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
-		return DiagnosticReport{}, fmt.Errorf("invalid json received from server: %s", err)
+		return DiagnosticReport{}, errors.Wrap(err, "invalid json received from server")
 	}
 
 	return DiagnosticReport{

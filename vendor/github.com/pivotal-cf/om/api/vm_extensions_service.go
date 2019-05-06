@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
+	"github.com/pkg/errors"
 )
 
 type VMExtensionResponse struct {
@@ -23,7 +25,7 @@ type CreateVMExtension struct {
 func (a Api) CreateStagedVMExtension(input CreateVMExtension) error {
 	jsonData, err := json.Marshal(&input)
 	if err != nil {
-		return fmt.Errorf("could not marshal json: %s", err)
+		return errors.Wrap(err, "could not marshal json")
 	}
 
 	resp, err := a.sendAPIRequest("PUT", fmt.Sprintf("/api/v0/staged/vm_extensions/%s", input.Name), jsonData)
@@ -31,6 +33,10 @@ func (a Api) CreateStagedVMExtension(input CreateVMExtension) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	if err = validateStatusOK(resp); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -42,19 +48,27 @@ func (a Api) ListStagedVMExtensions() ([]VMExtension, error) {
 	}
 	defer resp.Body.Close()
 
+	if err = validateStatusOK(resp); err != nil {
+		return nil, err
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	var vmExtensions VMExtensionResponse
 	if err = json.Unmarshal(body, &vmExtensions); err != nil {
-		return nil, fmt.Errorf("could not parse json: %s", err)
+		return nil, errors.Wrap(err, "could not parse json")
 	}
 
 	return vmExtensions.VMExtensions, nil
 }
 
 func (a Api) DeleteVMExtension(name string) error {
-	_, err := a.sendAPIRequest("DELETE", fmt.Sprintf("/api/v0/staged/vm_extensions/%s", name), nil)
+	resp, err := a.sendAPIRequest("DELETE", fmt.Sprintf("/api/v0/staged/vm_extensions/%s", name), nil)
+	if err = validateStatusOK(resp); err != nil {
+		return err
+	}
+
 	return err
 }

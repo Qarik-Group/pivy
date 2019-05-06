@@ -108,6 +108,13 @@ func (t TablePresenter) PresentCertificateAuthority(certificateAuthority api.CA)
 	t.tableWriter.Render()
 }
 
+func (t TablePresenter) PresentSSLCertificate(certificate api.SSLCertificate) {
+	t.tableWriter.SetAutoWrapText(false)
+	t.tableWriter.SetHeader([]string{"Certificate"})
+	t.tableWriter.Append([]string{certificate.Certificate})
+	t.tableWriter.Render()
+}
+
 func (t TablePresenter) PresentInstallations(installations []models.Installation) {
 	t.tableWriter.SetHeader([]string{"ID", "User", "Status", "Started At", "Finished At"})
 
@@ -169,7 +176,7 @@ func sortCredentialMap(cm map[string]string) ([]string, []string) {
 	key := make([]string, len(cm))
 	i := 0
 
-	for k, _ := range cm {
+	for k := range cm {
 		key[i] = k
 		i++
 	}

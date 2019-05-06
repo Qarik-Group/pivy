@@ -4,16 +4,19 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+
+	"github.com/pkg/errors"
 )
 
 func validateStatusOK(resp *http.Response) error {
 	if resp.StatusCode != http.StatusOK {
 		out, err := httputil.DumpResponse(resp, true)
 		if err != nil {
-			return fmt.Errorf("request failed: unexpected response: %s", err)
+			return errors.Wrap(err, "request failed: unexpected response")
 		}
 
 		return fmt.Errorf("request failed: unexpected response:\n%s", out)
 	}
+
 	return nil
 }

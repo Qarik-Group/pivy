@@ -2,7 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 const pendingChangesEndpoint = "/api/v0/staged/pending_changes"
@@ -27,13 +28,17 @@ type ProductChange struct {
 func (a Api) ListStagedPendingChanges() (PendingChangesOutput, error) {
 	resp, err := a.sendAPIRequest("GET", pendingChangesEndpoint, nil)
 	if err != nil {
-		return PendingChangesOutput{}, fmt.Errorf("failed to submit request: %s", err)
+		return PendingChangesOutput{}, errors.Wrap(err, "failed to submit request")
 	}
 	defer resp.Body.Close()
 
+	if err = validateStatusOK(resp); err != nil {
+		return PendingChangesOutput{}, err
+	}
+
 	var pendingChanges PendingChangesOutput
 	if err := json.NewDecoder(resp.Body).Decode(&pendingChanges); err != nil {
-		return PendingChangesOutput{}, fmt.Errorf("could not unmarshal pending_changes response: %s", err)
+		return PendingChangesOutput{}, errors.Wrap(err, "could not unmarshal pending_changes response")
 	}
 
 	return pendingChanges, nil

@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type LDAPSettings struct {
@@ -53,10 +55,16 @@ func (a Api) Setup(input SetupInput) (SetupOutput, error) {
 		return SetupOutput{}, err
 	}
 
-	_, err = a.sendUnauthedAPIRequest("POST", "/api/v0/setup", payload)
+	resp, err := a.sendUnauthedAPIRequest("POST", "/api/v0/setup", payload)
 	if err != nil {
-		return SetupOutput{}, fmt.Errorf("could not make api request to setup endpoint: %s", err)
+		return SetupOutput{}, errors.Wrap(err, "could not make api request to setup endpoint")
 	}
+	defer resp.Body.Close()
+
+	if err = validateStatusOK(resp); err != nil {
+		return SetupOutput{}, err
+	}
+
 	return SetupOutput{}, nil
 }
 
@@ -80,7 +88,7 @@ func (a Api) EnsureAvailability(input EnsureAvailabilityInput) (EnsureAvailabili
 
 	response, err := a.unauthedClient.Do(request)
 	if err != nil {
-		return EnsureAvailabilityOutput{}, fmt.Errorf("could not make request round trip: %s", err)
+		return EnsureAvailabilityOutput{}, errors.Wrap(err, "could not make request round trip")
 	}
 
 	defer response.Body.Close()
@@ -90,7 +98,7 @@ func (a Api) EnsureAvailability(input EnsureAvailabilityInput) (EnsureAvailabili
 	case response.StatusCode == http.StatusFound:
 		location, err := url.Parse(response.Header.Get("Location"))
 		if err != nil {
-			return EnsureAvailabilityOutput{}, fmt.Errorf("could not parse redirect url: %s", err)
+			return EnsureAvailabilityOutput{}, errors.Wrap(err, "could not parse redirect url")
 		}
 
 		if location.Path == "/setup" {

@@ -42,6 +42,10 @@ type Multipart struct {
 	finalizeReturnsOnCall map[int]struct {
 		result1 formcontent.ContentSubmission
 	}
+	ResetStub        func()
+	resetMutex       sync.RWMutex
+	resetArgsForCall []struct {
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -220,6 +224,29 @@ func (fake *Multipart) FinalizeReturnsOnCall(i int, result1 formcontent.ContentS
 	}{result1}
 }
 
+func (fake *Multipart) Reset() {
+	fake.resetMutex.Lock()
+	fake.resetArgsForCall = append(fake.resetArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Reset", []interface{}{})
+	fake.resetMutex.Unlock()
+	if fake.ResetStub != nil {
+		fake.ResetStub()
+	}
+}
+
+func (fake *Multipart) ResetCallCount() int {
+	fake.resetMutex.RLock()
+	defer fake.resetMutex.RUnlock()
+	return len(fake.resetArgsForCall)
+}
+
+func (fake *Multipart) ResetCalls(stub func()) {
+	fake.resetMutex.Lock()
+	defer fake.resetMutex.Unlock()
+	fake.ResetStub = stub
+}
+
 func (fake *Multipart) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -229,6 +256,8 @@ func (fake *Multipart) Invocations() map[string][][]interface{} {
 	defer fake.addFileMutex.RUnlock()
 	fake.finalizeMutex.RLock()
 	defer fake.finalizeMutex.RUnlock()
+	fake.resetMutex.RLock()
+	defer fake.resetMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

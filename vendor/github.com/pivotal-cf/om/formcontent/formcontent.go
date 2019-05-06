@@ -19,6 +19,7 @@ type Form struct {
 	formWriter  *multipart.Writer
 	files       []string
 	fileKeys    []*bytes.Buffer
+	doneWriting chan error
 }
 
 type ContentSubmission struct {
@@ -30,9 +31,9 @@ type ContentSubmission struct {
 func NewForm() *Form {
 	buf := &bytes.Buffer{}
 
-	pr, pw := io.Pipe()
-
 	formWriter := multipart.NewWriter(buf)
+
+	pr, pw := io.Pipe()
 
 	return &Form{
 		contentType: formWriter.FormDataContentType(),
@@ -41,7 +42,31 @@ func NewForm() *Form {
 		pw:          pw,
 		formFields:  buf,
 		formWriter:  formWriter,
+		doneWriting: make(chan error, 1),
 	}
+}
+
+func (f *Form) Reset() {
+	f.pw.Close()
+
+	<-f.doneWriting
+
+	buf := &bytes.Buffer{}
+
+	formWriter := multipart.NewWriter(buf)
+
+	pr, pw := io.Pipe()
+
+	f.contentType = formWriter.FormDataContentType()
+	f.boundary = formWriter.Boundary()
+	f.length = 0
+	f.pr = pr
+	f.pw = pw
+	f.formFields = buf
+	f.formWriter = formWriter
+	f.files = nil
+	f.fileKeys = nil
+	f.doneWriting = make(chan error, 1)
 }
 
 func (f *Form) AddField(key string, value string) error {
@@ -63,7 +88,10 @@ func (f *Form) AddFile(key string, path string) error {
 	buf := &bytes.Buffer{}
 
 	fileKey := multipart.NewWriter(buf)
-	fileKey.SetBoundary(f.boundary)
+	err = fileKey.SetBoundary(f.boundary)
+	if err != nil {
+		return err
+	}
 
 	_, err = fileKey.CreateFormFile(key, filepath.Base(path))
 	if err != nil {
@@ -132,21 +160,24 @@ func (f *Form) writeToPipe() {
 		if separate {
 			_, err = f.pw.Write([]byte("\r\n"))
 			if err != nil {
-				f.pw.CloseWithError(err)
+				_ = f.pw.CloseWithError(err)
+				f.doneWriting <- err
 				return
 			}
 		}
 
 		_, err = io.Copy(f.pw, key)
 		if err != nil {
-			f.pw.CloseWithError(err)
+			_ = f.pw.CloseWithError(err)
+			f.doneWriting <- err
 			return
 		}
 
 		fileName := f.files[i]
 		err = writeFileToPipe(fileName, f.pw)
 		if err != nil {
-			f.pw.CloseWithError(err)
+			_ = f.pw.CloseWithError(err)
+			f.doneWriting <- err
 			return
 		}
 
@@ -157,19 +188,21 @@ func (f *Form) writeToPipe() {
 	if separate && f.formFields.Len() > len(f.boundary)+8 { // boundary+8 =>format: \r\n--boundary-words--\r\n
 		_, err = f.pw.Write([]byte("\r\n"))
 		if err != nil {
-			f.pw.CloseWithError(err)
+			_ = f.pw.CloseWithError(err)
+			f.doneWriting <- err
 			return
 		}
 	}
 
 	_, err = io.Copy(f.pw, f.formFields)
 	if err != nil {
-		f.pw.CloseWithError(err)
+		_ = f.pw.CloseWithError(err)
+		f.doneWriting <- err
 		return
 	}
 
-	f.pw.Close()
-	return
+	_ = f.pw.Close()
+	f.doneWriting <- nil
 }
 
 func writeFileToPipe(fileName string, writer *io.PipeWriter) error {
